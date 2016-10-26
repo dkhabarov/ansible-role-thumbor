@@ -1,0 +1,85 @@
+---
+- name: install dependent packages
+  apt:
+    pkg: "{{ item }}"
+  with_items:
+    - libcurl4-openssl-dev
+    - python-dev
+    - python-pip
+#    - ffmpeg
+    - libjpeg-dev
+    - libpng12-dev
+    - libtiff-dev
+    - libjasper-dev
+    - libgtk2.0-dev
+    - python-numpy
+    - python-pycurl
+    - webp
+    - python-opencv
+    - python-dev
+    - python-pip
+    - gifsicle
+  when: ansible_os_family == "Debian"
+
+- name: install thumbor
+  pip:
+    name: thumbor
+    version: "{{ thumbor_version }}"
+
+- name: add working group
+  group:
+    name: thumbor
+
+- name: add working user
+  user:
+    name: thumbor
+    comment: "thumbnail service"
+    group: thumbor
+    home: /var/lib/thumbor
+
+- name: install default params
+  template:
+    src: "etc/default/thumbor.j2"
+    dest: "/etc/default/thumbor"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - service thumbor stop
+    - service thumbor start
+
+- name: install upstart files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest}}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - {src: 'etc/init/thumbor-worker.conf.j2', dest: '/etc/init/thumbor-worker.conf'}
+    - {src: 'etc/init/thumbor.conf.j2', dest: '/etc/init/thumbor.conf'}
+  notify:
+    - service thumbor stop
+    - service thumbor start
+
+- name: install thumbor.conf
+  template:
+    src: "etc/thumbor.conf.j2"
+    dest: "/etc/thumbor.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - service thumbor stop
+    - service thumbor start
+
+- name: install thumbor.key
+  template:
+    src: etc/thumbor.key.j2
+    dest: /etc/thumbor.key
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - service thumbor stop
+    - service thumbor start

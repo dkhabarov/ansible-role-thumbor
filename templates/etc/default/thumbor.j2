@@ -1,0 +1,7 @@
+enabled={{thumbor_enabled|default(0)}}
+
+conffile={{thumbor_conffile}}
+
+{%if thumbor_intanses_ports is defined %}port={{thumbor_intanses_ports | join(',') }}{%endif%}
+
+{%if thumbor_listen_v4_addr is defined%}ip={{thumbor_listen_v4_addr}}{%endif%}

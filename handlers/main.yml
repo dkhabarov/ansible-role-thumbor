@@ -1,0 +1,15 @@
+---
+- name: service thumbor restart
+  service:
+    name: thumbor
+    state: restarted
+
+- name: service thumbor stop
+  service:
+    name: thumbor
+    state: stopped
+
+- name: service thumbor start
+  service:
+    name: thumbor
+    state: started

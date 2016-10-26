@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{%for key in THUMBOR_CONF %}
+{{key}} = {{THUMBOR_CONF[key]}}
+{%endfor%}
